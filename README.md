@@ -1,5 +1,5 @@
 <div align="center">
-  <img height="200" src="![https://github.com/norizara/norizara/blob/main/ccfa3fec766c5f333052c68d52223827.jpg?raw=true]"  />
+  <img height="200" src="!(https://github.com/norizara/norizara/blob/main/ccfa3fec766c5f333052c68d52223827.jpg?raw=true)"  />
 </div>
 
 ###
