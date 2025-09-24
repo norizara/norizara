@@ -5,11 +5,13 @@
 <!-- STATS_START -->
 ## 📈 Live GitHub Stats
 
-**🔥 Current Streak:** 1 days  
-**📅 Last 30 Days:** 15 contributions  
-**⚡ Last Active:** 2025-09-24  
+| Metric | Value | 
+|--------|-------|
+| **🔥 Current Streak** | 1 days |
+| **📅 Last 30 Days** | 15 contributions |
+| **⚡ Last Active** | 2025-09-24 |
 
-*Last updated: 2025-09-24 09:37 UTC*
+*🚀 Updated after code push - 2025-09-24 09:38 UTC*
 <!-- STATS_END -->
 
 # 👋 Hi, I'm Norizara
