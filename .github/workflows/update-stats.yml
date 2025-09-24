@@ -1,0 +1,46 @@
+name: Update GitHub Stats
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # Allow manual triggers
+  push:
+    paths:
+      - '.github/workflows/update-stats.yml'
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Fetch stats from your API
+        id: get-stats
+        run: |
+          response=$(curl -s "https://gitcommittracker.up.railway.app/norizara")
+          echo "RESPONSE<<EOF" >> $GITHUB_OUTPUT
+          echo "$response" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Update README with new stats
+        env:
+          API_RESPONSE: ${{ steps.get-stats.outputs.RESPONSE }}
+        run: |
+          python scripts/update_readme.py
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --staged --quiet || git commit -m "📈 Update GitHub stats - $(date +'%Y-%m-%d')"
+          git push
