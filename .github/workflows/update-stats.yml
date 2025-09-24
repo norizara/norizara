@@ -3,39 +3,42 @@ on:
   schedule:
     # Run daily at 00:00 UTC
     - cron: '0 0 * * *'
-  workflow_dispatch:  # Allow manual triggers
+  workflow_dispatch:  # Manual trigger
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 permissions:
   contents: write
 
 jobs:
   update-stats:
+    # Don't run on PRs from forks
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: main
+          ref: ${{ github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install requests
-
       - name: Fetch stats from your API
         id: get-stats
         run: |
-          response=$(curl -s "https://gitcommittracker.up.railway.app/norizara")
+          # Add timeout and retry for reliability
+          response=$(curl -s --max-time 30 --retry 3 "https://gitcommittracker.up.railway.app/norizara")
           echo "response<<EOF" >> $GITHUB_OUTPUT
           echo "$response" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-          echo "API call completed"
+          echo "API call completed for ${{ github.event_name }} event"
 
       - name: Update README with new stats
         env:
@@ -46,7 +49,7 @@ jobs:
       - name: Check for changes
         id: git-check
         run: |
-          git diff --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --quiet README.md || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push if changed
         if: steps.git-check.outputs.changed == 'true'
@@ -54,5 +57,14 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add README.md
-          git commit -m "📈 Auto-update GitHub stats - $(date +'%Y-%m-%d %H:%M UTC')"
+          
+          # Different commit messages based on trigger
+          if [ "${{ github.event_name }}" = "push" ]; then
+            git commit -m "📈 Auto-update stats after code push - $(date +'%Y-%m-%d %H:%M UTC')"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            git commit -m "📈 Daily stats update - $(date +'%Y-%m-%d %H:%M UTC')"
+          else
+            git commit -m "📈 Manual stats update - $(date +'%Y-%m-%d %H:%M UTC')"
+          fi
+          
           git push
