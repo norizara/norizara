@@ -7,8 +7,8 @@ def main():
     api_response = os.environ.get('API_RESPONSE', '')
     
     print("=== GitHub Action Debug ===")
+    print("Triggered by:", os.environ.get('GITHUB_EVENT_NAME', 'unknown'))
     print("API Response length:", len(api_response))
-    print("API Response preview:", api_response[:200] + "..." if len(api_response) > 200 else api_response)
     
     # Extract stats from your API response format
     contributions_match = re.search(r'Total contributions.*?: (\d+)', api_response)
@@ -30,20 +30,30 @@ def main():
         print("README.md not found, creating basic one")
         readme_content = "# Norizara\n\n<!-- STATS_START --><!-- STATS_END -->"
     
+    # Determine update reason
+    event_name = os.environ.get('GITHUB_EVENT_NAME', 'schedule')
+    if event_name == 'push':
+        update_reason = "🚀 Updated after code push"
+    elif event_name == 'workflow_dispatch':
+        update_reason = "⚡ Manual update"
+    else:
+        update_reason = "📅 Daily auto-update"
+    
     # Create new stats section
     new_stats_section = f"""<!-- STATS_START -->
 ## 📈 Live GitHub Stats
 
-**🔥 Current Streak:** {streak} days  
-**📅 Last 30 Days:** {contributions} contributions  
-**⚡ Last Active:** {last_active}  
+| Metric | Value | 
+|--------|-------|
+| **🔥 Current Streak** | {streak} days |
+| **📅 Last 30 Days** | {contributions} contributions |
+| **⚡ Last Active** | {last_active} |
 
-*Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}*
+*{update_reason} - {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}*
 <!-- STATS_END -->"""
     
     # Replace or add the stats section
     if '<!-- STATS_START -->' in readme_content and '<!-- STATS_END -->' in readme_content:
-        # Replace existing section
         start_tag = '<!-- STATS_START -->'
         end_tag = '<!-- STATS_END -->'
         start_index = readme_content.find(start_tag)
@@ -51,7 +61,6 @@ def main():
         
         updated_readme = readme_content[:start_index] + new_stats_section + readme_content[end_index:]
     else:
-        # Add new section at the beginning
         updated_readme = new_stats_section + "\n\n" + readme_content
     
     # Write updated README
