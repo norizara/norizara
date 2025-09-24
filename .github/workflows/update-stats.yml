@@ -5,8 +5,10 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:  # Allow manual triggers
   push:
-    paths:
-      - '.github/workflows/update-stats.yml'
+    branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   update-stats:
@@ -16,31 +18,41 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
+      - name: Install dependencies
+        run: pip install requests
+
       - name: Fetch stats from your API
         id: get-stats
         run: |
           response=$(curl -s "https://gitcommittracker.up.railway.app/norizara")
-          echo "RESPONSE<<EOF" >> $GITHUB_OUTPUT
+          echo "response<<EOF" >> $GITHUB_OUTPUT
           echo "$response" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "API call completed"
 
       - name: Update README with new stats
         env:
-          API_RESPONSE: ${{ steps.get-stats.outputs.RESPONSE }}
+          API_RESPONSE: "${{ steps.get-stats.outputs.response }}"
         run: |
           python scripts/update_readme.py
 
-      - name: Commit and push if changed
+      - name: Check for changes
+        id: git-check
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git diff --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add README.md
-          git diff --staged --quiet || git commit -m "📈 Update GitHub stats - $(date +'%Y-%m-%d')"
+          git commit -m "📈 Auto-update GitHub stats - $(date +'%Y-%m-%d %H:%M UTC')"
           git push

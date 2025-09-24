@@ -5,12 +5,11 @@
 <!-- STATS_START -->
 ## 📈 Live GitHub Stats
 
-| Metric | Value | Last Updated |
-|--------|-------|--------------|
-| **🔥 Current Streak** | `loading...` | - |
-| **📅 Last 30 Days** | `loading...` | [View Details](https://gitcommittracker.up.railway.app/norizara) |
-| **⚡ Last Active** | `loading...` | Auto-updated daily |
+**🔥 Current Streak:** loading...  
+**📅 Last 30 Days:** loading...  
+**⚡ Last Active:** loading...  
 
+*Last updated: -*
 <!-- STATS_END -->
 
 # 👋 Hi, I'm Norizara
