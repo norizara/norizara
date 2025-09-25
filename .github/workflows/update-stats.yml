@@ -14,10 +14,9 @@ permissions:
 
 jobs:
   update-stats:
-    # Don't run on PRs from forks
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    
     runs-on: ubuntu-latest
+    
+    # Remove the restrictive condition that was causing the issue
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
