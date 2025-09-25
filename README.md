@@ -14,16 +14,10 @@
 *📅 Daily auto-update - 2025-09-25 01:24 UTC*
 <!-- STATS_END -->
 
-# 👋 Hi, I'm Norizara
 
-## 🛠️ Technologies & Skills
-- **Backend:** Python, FastAPI, REST APIs
-- **DevOps:** Docker, GitHub Actions, Railway
-- **Web Development:** JavaScript, HTML/CSS
-
-## 🚀 My Projects
+## My Projects
 - [**Git Contribution Tracker**](https://gitcommittracker.up.railway.app) - Real-time GitHub stats API
 - [**This Profile**](https://github.com/norizara) - Auto-updating with GitHub Actions
+- [**PWA To-Do-List**](https://github.com/norizara/todolist) - Local Storage To-Do-List
 
 <h2 align="center"></h2>
-
