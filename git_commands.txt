@@ -1,0 +1,17 @@
+Git Commands
+
+git init # initialize local repo
+git add <file> # adds file to staging area
+git status # check status of files in staging area
+git commit -m "message" # commit changes to local repo
+git push # push local to remote repo
+git pull # pull changes from remote repo
+git clone # copy remote repo into new dir
+git rm --cached <file> # remove file from repo. remove --cached to remove local file as well
+git branch <name> # creates new branch
+git checkout <branch> # change branch
+git merge <branch> # merge branch to master/main branch
+git remote add <name> <url> # adds new remote repo
+git push -u <name> <branch> # push change to remote repo on branch
+
+
