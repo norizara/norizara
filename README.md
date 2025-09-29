@@ -2,18 +2,6 @@
   <img height="200" src="https://github.com/norizara/norizara/blob/main/maxwell-the-cat.gif?raw=true"  />
 </div>
 
-<!-- STATS_START -->
-## 📈 Live GitHub Stats
-
-| Metric | Value | 
-|--------|-------|
-| **🔥 Current Streak** | 0 days |
-| **📅 Last 30 Days** | 17 contributions |
-| **⚡ Last Active** | 2025-09-26 |
-
-*📅 Daily auto-update - 2025-09-29 01:25 UTC*
-<!-- STATS_END -->
-
 not a cat.
 
 ## My Projects
